@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Ventasapp'
+    'appm'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'SistemaVentas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tiendabd',
+        'NAME': 'lozada',
         'HOST': 'localhost',
         'USER': 'root',
         'PASSWORD': 'mylena123',

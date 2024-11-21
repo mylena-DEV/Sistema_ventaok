@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class VentasappConfig(AppConfig):
+class AppmConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Ventasapp'
+    name = 'appm'

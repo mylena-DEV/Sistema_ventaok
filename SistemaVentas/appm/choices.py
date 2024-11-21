@@ -1,7 +1,7 @@
 CATEGORIAS = [
     ("Bebidas",'Bebidas'),
     ('Comidas','Comidas'),
-    ('Limpeza','Limpeza'),
-    ('ropa','rospa'),
+    ('Limpieza','Limpieza'),
+    ('ropa','ropa'),
     ('Otros','Otros'),
 ]
