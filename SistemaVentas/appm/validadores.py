@@ -1,5 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator #para hacer validaciones especiales letras y espacio (o expresiones regulares)
+from django.utils import timezone
+from datetime import timedelta, date 
+
 def validacion_numeros(value):
     if not value.isdigit():
         raise ValidationError("El valor debe contener solo números") #raise funciona como como un print para devolver un mensajhe en caso de que no se cumpla la condicion
@@ -28,3 +31,8 @@ validacion_especial3 = RegexValidator(
     regex= r'^[a-zA-Z0-9,-ó\s]+$', #para establecer la expresion regular o cadena permitidos 
     message= 'el campo solo debe contener letras y espacios'
 )
+
+    
+def validacion_fecha_vencimiento(fecha_creacion, fecha_vencimiento):
+    if fecha_vencimiento > fecha_creacion + timedelta(days=5*365):
+        raise ValidationError("Tu producto ya expiro")

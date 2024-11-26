@@ -2,20 +2,25 @@ from django.db import models
 from .choices import CATEGORIAS
 from decimal import Decimal
 from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
-from .validadores import validacion_numeros, Validacion_letras
+from .validadores import validacion_numeros, Validacion_letras, validacion_especial, validacion_especial2, validacion_especial3
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta, date 
 
 # Create your models here.
 class Clientes(models.Model):
     cedula = models.CharField(primary_key=True, max_length=10, unique=True, validators= [MinLengthValidator(10), validacion_numeros])
-    nombre = models.CharField(max_length=50, blank=False, verbose_name= 'Nombre del cliente : ', validators=[Validacion_letras])
-    apellido = models.CharField(max_length=50, blank=False)
-    telefono = models.CharField(max_length=10)
+    nombre = models.CharField(max_length=50, blank=False, verbose_name= 'Nombre del cliente : ', validators=[validacion_especial])
+    apellido = models.CharField(max_length=50, blank=False, validators= [Validacion_letras])
+    telefono = models.CharField(max_length=10,validators= [MinLengthValidator(10), validacion_numeros])
     email = models.EmailField(unique=True)
     direccion = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    Fecha_nacimiento = models.DateField()
+    Edad = models.IntegerField(validators=[MinValueValidator(18),MaxValueValidator(60)])
+    
 
-    def _str_(self):
+
+    def __str__(self):
         return f"{self.nombre} {self.apellido} "
     class Meta:
         verbose_name = 'ingresa los datos del Cliente :'
@@ -26,35 +31,39 @@ class Clientes(models.Model):
 
 class Productos(models.Model):
     codigo = models.CharField(primary_key=True, max_length=10, unique=True)
-    nombre = models.CharField(max_length=50, blank=False, verbose_name=' Nombre del producto : ') 
+    nombre = models.CharField(max_length=50, blank=False, verbose_name=' Nombre del producto : ',validators= [Validacion_letras]) 
     marca = models.CharField(max_length=50, unique=True)
     caracteristicas_categoria = models.CharField(max_length=100, choices= CATEGORIAS)
     precio = models.DecimalField(max_digits=10, decimal_places=2, help_text='ingresa valores con decimales', verbose_name='Precio del producto : ')
     cantidad_stock = models.IntegerField(verbose_name='Cantidad en stock : ')
-    fecha_ingreso = models.DateTimeField(auto_now_add=True)
+    fecha_ingreso = models.DateField(auto_now_add=True)
     fecha_elaboracion = models.DateField()
-    fecha_vencimiento = models.DateField()
-    #creamos una funncion para actualizar el stock
-    #pasando como parametro la cantidad y guardando los cambios con save
+    fecha_vencimiento = models.DateField(blank=True, null=True)
+    
+    
+    def save(self,*args,**kwargs):
+        self.fecha_vencimiento=self.fecha_elaboracion + timedelta(days=365*5)
+        super().save(*args,**kwargs)
+    
     def actualizar_stock (self, cantidad):
         self.cantidad_stock -= cantidad # -= es una forma de operar (parecido a los contadores) siempre y cuadno sea una sola operacion contador = contador + 1
         self.save()
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.nombre}  {self.marca} "
     class Meta:
         verbose_name = 'Producto :'
         verbose_name_plural = 'Productos'
         db_table = 'Productos'
 
-class Empresas (models.Model):
-    ruc = models.CharField(primary_key=True, max_length=13, unique=True)
-    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre de la empresa : ')
+class Empresas(models.Model):
+    ruc = models.CharField(primary_key=True, max_length=13, unique=True,validators= [MinLengthValidator(10), validacion_numeros])
+    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre de la empresa : ',validators= [Validacion_letras])
     direccion = models.TextField()
-    telefono = models.CharField(max_length=10)
+    telefono = models.CharField(max_length=10,validators= [MinLengthValidator(10), validacion_numeros])
     email = models.EmailField(unique=True)
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.nombre} "
     class Meta:
         verbose_name = 'Empresa :'
@@ -62,30 +71,30 @@ class Empresas (models.Model):
         db_table = 'Empresas'
 
 class Proveedores (models.Model):
-    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre del proveedor : ')
-    cedula = models.CharField(primary_key=True, max_length=10, unique=True)
-    apellido = models.CharField(max_length=50, blank=False)
-    telefono = models.CharField(max_length=10)
+    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre del proveedor : ',validators= [Validacion_letras])
+    cedula = models.CharField(primary_key=True, max_length=10, unique=True, validators= [MinLengthValidator(10), validacion_numeros])
+    apellido = models.CharField(max_length=50, blank=False,validators= [Validacion_letras])
+    telefono = models.CharField(max_length=10,validators= [MinLengthValidator(10), validacion_numeros])
     email = models.EmailField(unique=True)
     empresa = models.ForeignKey(Empresas, on_delete= models.CASCADE)
-    def _str_(self):
-        return f"{self.nombre} ' ' {self.apellido} "
+    def __str__(self):
+        return f"{self.nombre}  {self.apellido} "
     class Meta:
         verbose_name = 'Proveedor '
         verbose_name_plural = 'Proveedores'
         db_table = 'Proveedores'
 
 class Empleados (models.Model):
-    cedula = models.CharField(primary_key=True, max_length=10, unique=True, verbose_name= 'Cedula del Empleado :')
-    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre del Empleado : ')
-    apellido = models.CharField(max_length=50, blank=False)
-    telefono = models.CharField(max_length=10)
+    cedula = models.CharField(primary_key=True, max_length=10, unique=True, verbose_name= 'Cedula del Empleado :', validators= [MinLengthValidator(10),validacion_numeros])
+    nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre del Empleado : ',validators= [Validacion_letras])
+    apellido = models.CharField(max_length=50, blank=False,validators= [Validacion_letras])
+    telefono = models.CharField(max_length=10,validators= [MinLengthValidator(10),validacion_numeros])
     email = models.EmailField(unique=True)
     direccion = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_nacimiento = models.DateField()
-    def _str_(self):
-        return f"{self.nombre} ' ' {self.apellido} "
+    def __str__(self):
+        return f"{self.nombre} {self.apellido} "
     class Meta:
         verbose_name = 'Empleado :'
         verbose_name_plural = 'Empleados'
@@ -112,7 +121,7 @@ class Factura(models.Model):
         self.producto.actualizar_stock(self.cantidad)
         super().save(*args, **kwargs)
 
-    def _str_(self):
+    def __str__(self):
         return f"Factura {self.codigo_factura} - Cliente: {self.cliente.nombre} - Total: ${self.total}"
 
     class Meta:
