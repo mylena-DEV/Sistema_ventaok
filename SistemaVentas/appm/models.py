@@ -16,7 +16,7 @@ class Clientes(models.Model):
     email = models.EmailField(unique=True)
     direccion = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    Edad = models.IntegerField(validators=[MinValueValidator(18),MaxValueValidator(60)])
+    fecha_nacimiento = models.DateField(validators=[MinValueValidator(18),MaxValueValidator(60)])
     
 
 
@@ -37,8 +37,8 @@ class Productos(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2, help_text='ingresa valores con decimales', verbose_name='Precio del producto : ')
     cantidad_stock = models.IntegerField(verbose_name='Cantidad en stock : ')
     fecha_ingreso = models.DateField(auto_now_add=True)
-    fecha_elaboracion = models.DateField()
-    fecha_vencimiento = models.DateField(blank=True, null=True)
+    fecha_elaboracion = models.DateTimeField(auto_now_add=True)
+    fecha_vencimiento = models.DateField(null=True, blank=True)
     
     
     def save(self,*args,**kwargs):

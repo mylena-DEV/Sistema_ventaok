@@ -29,3 +29,12 @@ validacion_especial3 = RegexValidator(
     regex= r'^[a-zA-Z0-9,-ó\s]+$', #para establecer la expresion regular o cadena permitidos 
     message= 'el campo solo debe contener letras y espacios'
 )
+
+from .serializers import ClientesSerializer
+from rest_framework import viewsets
+from .models import Clientes
+
+
+class ClientesViewSet(viewsets.ModelViewSet):
+    queryset = Clientes.objects.all() #sirve para traer todos los objetos del modelo clientes
+    serializer_class = ClientesSerializer #sirve para indicar cual es el serializador que va a utilizar la vista
