@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta, date 
 
-# Create your models here.
+
 class Clientes(models.Model):
     cedula = models.CharField(primary_key=True, max_length=10, unique=True, validators= [MinLengthValidator(10), validacion_numeros])
     nombre = models.CharField(max_length=50, blank=False, verbose_name= 'Nombre del cliente : ', validators=[validacion_especial])
@@ -16,17 +16,14 @@ class Clientes(models.Model):
     email = models.EmailField(unique=True)
     direccion = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    fecha_nacimiento = models.DateField(validators=[MinValueValidator(18),MaxValueValidator(60)])
+    fecha_nacimiento = models.DateField()
     
-
-
     def __str__(self):
         return f"{self.nombre} {self.apellido} "
     class Meta:
         verbose_name = 'ingresa los datos del Cliente :'
         verbose_name_plural = 'datos Clientes'
         db_table = 'Clientes'
-
 
 
 class Productos(models.Model):
@@ -36,9 +33,9 @@ class Productos(models.Model):
     caracteristicas_categoria = models.CharField(max_length=100, choices= CATEGORIAS)
     precio = models.DecimalField(max_digits=10, decimal_places=2, help_text='ingresa valores con decimales', verbose_name='Precio del producto : ')
     cantidad_stock = models.IntegerField(verbose_name='Cantidad en stock : ')
-    fecha_ingreso = models.DateField(auto_now_add=True)
-    fecha_elaboracion = models.DateTimeField(auto_now_add=True)
-    fecha_vencimiento = models.DateField(null=True, blank=True)
+    fecha_ingreso = models.DateTimeField(auto_now_add=True)
+    fecha_elaboracion = models.DateField()
+    fecha_vencimiento = models.DateField()
     
     
     def save(self,*args,**kwargs):
@@ -55,6 +52,7 @@ class Productos(models.Model):
         verbose_name = 'Producto :'
         verbose_name_plural = 'Productos'
         db_table = 'Productos'
+
 
 class Empresas(models.Model):
     ruc = models.CharField(primary_key=True, max_length=13, unique=True,validators= [MinLengthValidator(10), validacion_numeros])
@@ -111,7 +109,10 @@ class Factura(models.Model):
     iva = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
 
-        
+    def clean(self):
+        if self.cantidad > self.producto.stock:
+            raise ValidationError('no debe exceder al stock')
+    
     def save(self, *args, **kwargs):
         """Sobrescribe el método save para calcular valores automáticamente."""
         self.subtotal = self.cantidad * self.producto.precio
@@ -121,10 +122,30 @@ class Factura(models.Model):
         self.producto.actualizar_stock(self.cantidad)
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self):   
         return f"Factura {self.codigo_factura} - Cliente: {self.cliente.nombre} - Total: ${self.total}"
 
     class Meta:
         verbose_name = 'Factura'
         verbose_name_plural = 'Facturas'
         db_table = 'Facturas'
+
+#validar (un nuevo atributo), (restarle al stock),(vendida,anulada),(en el save if),(ultima factura estado)
+#levantar requerimientos de una tienda funcionales y no funcionales
+#orden(que agrega en el sistema) guarda e imprime
+
+#mejorar el sistema * documentacion - entrevistas
+#si una cedula tiene repetida la cedula
+#si se borra los datos
+#si un cliente nunca compro
+#ver si hace falta un modelo
+#fecha: 11 de diciembre
+#tipo informe y # la otra semana mierocles 04 traer los proyectos de la tesis 
+"""objetivo
+alcance
+beneficiarios"""
+#17 pre defensa 
+# ultima semana de enero 13 enero
+
+#vendida anulada
+

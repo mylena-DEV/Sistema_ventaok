@@ -36,3 +36,5 @@ validacion_especial3 = RegexValidator(
 def validacion_fecha_vencimiento(fecha_creacion, fecha_vencimiento):
     if fecha_vencimiento > fecha_creacion + timedelta(days=5*365):
         raise ValidationError("Tu producto ya expiro")
+
+#validar que no deje vender + fecha 

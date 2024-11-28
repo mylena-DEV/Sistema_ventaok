@@ -8,7 +8,7 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=50)
     stock = models.IntegerField(validators= [MinValueValidator(1)])
     precio = models.FloatField()
-    
+
     
     def restar_stock(self, cantidad):
             self.stock = self.stock - cantidad

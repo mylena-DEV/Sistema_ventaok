@@ -30,11 +30,41 @@ validacion_especial3 = RegexValidator(
     message= 'el campo solo debe contener letras y espacios'
 )
 
-from .serializers import ClientesSerializer
+from .serializers import ClientesSerializer, ProductosSerializer, FacturaSerializer, EmpresasSerializer, EmpleadosSerializer, ProveedoresSerializer
 from rest_framework import viewsets
-from .models import Clientes
+from .models import Clientes, Productos, Factura, Empresas, Empleados, Proveedores
 
+#vistas sirve para acceder a los metodos que ofrece una api (metodo post/get/delete/put)
+#post : para enviar informacion especificamente en los formularios
+#get : para enviar/obtener informacion
+#put: para actualizar informacion
+#delete: para borrar informacion
+#(parametros)
+#clas es la plantilla (en base ala clase se crea el objeto)el modelo contiene la clase y la clase obtiene el objeto
 
 class ClientesViewSet(viewsets.ModelViewSet):
     queryset = Clientes.objects.all() #sirve para traer todos los objetos del modelo clientes
     serializer_class = ClientesSerializer #sirve para indicar cual es el serializador que va a utilizar la vista
+
+class ProductosViewSet(viewsets.ModelViewSet):
+    queryset = Productos.objects.all()
+    serializer_class =  ProductosSerializer
+
+class FacturaViewSet(viewsets.ModelViewSet):
+    queryset = Factura.objects.all()
+    serializer_class =  FacturaSerializer
+
+class EmpresasViewSet(viewsets.ModelViewSet):
+    queryset = Empresas.objects.all()
+    serializer_class = EmpresasSerializer   
+
+class EmpleadosViewSet(viewsets.ModelViewSet):
+    queryset = Empleados.objects.all()
+    serializer_class = EmpleadosSerializer
+    
+class ProveedoresViewSet(viewsets.ModelViewSet):
+    queryset = Proveedores.objects.all()
+    serializer_class = ProveedoresSerializer
+    
+
+    

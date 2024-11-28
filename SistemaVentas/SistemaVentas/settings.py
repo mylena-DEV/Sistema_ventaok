@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'appm',
     'Practicasave',
-    'rest_framework'
+    'rest_framework' #habilita las vistas del framework
 ]
 
 MIDDLEWARE = [
