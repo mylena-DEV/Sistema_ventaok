@@ -1,5 +1,5 @@
 from django.db import models
-from .choices import CATEGORIAS
+from .choices import CATEGORIAS, ESTADOS
 from decimal import Decimal
 from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
 from .validadores import validacion_numeros, Validacion_letras, validacion_especial, validacion_especial2, validacion_especial3
@@ -98,17 +98,27 @@ class Empleados (models.Model):
         verbose_name_plural = 'Empleados'
         db_table = 'Empleados'
 
-class Factura(models.Model):
-    codigo_factura = models.AutoField(primary_key=True)
-    fecha_factura = models.DateTimeField(auto_now_add=True)
+class Orden(models.Model):
+    codigo_orden = models.AutoField(primary_key=True)
+    fecha_orden = models.DateTimeField(auto_now_add=True)
     cliente = models.ForeignKey(Clientes, on_delete=models.CASCADE)
     empleado = models.ForeignKey(Empleados, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Factura'
+        verbose_name_plural = 'Facturas'
+        db_table = 'Facturas'
+        
+class Detalle_orden(models.Model):
+    orden = models.ForeignKey(Orden, on_delete=models.CASCADE)
+    estados = models.CharField(max_length=50,choices=ESTADOS)
     producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, editable=True, default=0)
     iva = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
-
+    
+    
     def clean(self):
         if self.cantidad > self.producto.stock:
             raise ValidationError('no debe exceder al stock')
@@ -121,14 +131,6 @@ class Factura(models.Model):
         self.producto.cantidad_stock = int(self.producto.cantidad_stock) - int(self.cantidad)
         self.producto.actualizar_stock(self.cantidad)
         super().save(*args, **kwargs)
-
-    def __str__(self):   
-        return f"Factura {self.codigo_factura} - Cliente: {self.cliente.nombre} - Total: ${self.total}"
-
-    class Meta:
-        verbose_name = 'Factura'
-        verbose_name_plural = 'Facturas'
-        db_table = 'Facturas'
 
 #validar (un nuevo atributo), (restarle al stock),(vendida,anulada),(en el save if),(ultima factura estado)
 #levantar requerimientos de una tienda funcionales y no funcionales

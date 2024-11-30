@@ -5,12 +5,14 @@ admin.site.register(Empresas)
 
 # @ vamos a usar un decorador 
 
-@admin.register(Factura)
-class FacturaAdmin(admin.ModelAdmin):
-    list_display = ('codigo_factura', 'fecha_factura', 'cliente', 'empleado', 'producto', 'cantidad','subtotal', 'iva', 'total')
-    list_filter = ('fecha_factura',)
-    search_fields = ('codigo_factura', 'cliente__nombre', 'empleado__nombre', 'producto__nombre')
-    
+@admin.register(Orden)
+class OrdenAdmin(admin.ModelAdmin):
+    list_display = ('codigo_orden', 'fecha_orden', 'cliente', 'empleado')
+    list_filter = ('fecha_orden',)
+
+@admin.register(Detalle_orden)
+class Detalle_OrdenAdmin(admin.ModelAdmin):
+    list_display = ('orden', 'estados', 'producto', 'cantidad','subtotal', 'iva', 'total')
     
 @admin.register(Clientes)
 class ClientesAdmin(admin.ModelAdmin):

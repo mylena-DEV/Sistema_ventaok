@@ -30,9 +30,9 @@ validacion_especial3 = RegexValidator(
     message= 'el campo solo debe contener letras y espacios'
 )
 
-from .serializers import ClientesSerializer, ProductosSerializer, FacturaSerializer, EmpresasSerializer, EmpleadosSerializer, ProveedoresSerializer
+from .serializers import ClientesSerializer, ProductosSerializer, OrdenSerializer, EmpresasSerializer, EmpleadosSerializer, ProveedoresSerializer
 from rest_framework import viewsets
-from .models import Clientes, Productos, Factura, Empresas, Empleados, Proveedores
+from .models import Clientes, Productos, Orden , Empresas, Empleados, Proveedores
 
 #vistas sirve para acceder a los metodos que ofrece una api (metodo post/get/delete/put)
 #post : para enviar informacion especificamente en los formularios
@@ -50,9 +50,9 @@ class ProductosViewSet(viewsets.ModelViewSet):
     queryset = Productos.objects.all()
     serializer_class =  ProductosSerializer
 
-class FacturaViewSet(viewsets.ModelViewSet):
-    queryset = Factura.objects.all()
-    serializer_class =  FacturaSerializer
+class OrdenViewSet(viewsets.ModelViewSet):
+    queryset = Orden.objects.all()
+    serializer_class =  OrdenSerializer
 
 class EmpresasViewSet(viewsets.ModelViewSet):
     queryset = Empresas.objects.all()
