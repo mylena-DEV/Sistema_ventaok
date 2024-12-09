@@ -1,6 +1,6 @@
 #Los serializadores convierten los registros en formato json(clave valor, ejmeplo : 'usuario':'Carlos')
 from rest_framework import serializers
-from .models import Clientes, Productos, Empresas, Orden, Proveedores, Empleados, Detalle_orden,Marca
+from .models import Clientes, Productos, Empresas, Orden, Proveedores, Empleados, Detalle_orden,Marca, MetodoPago
 #listas en corchetes , parametros llaves
 class ClientesSerializer(serializers.ModelSerializer):
     class Meta: #debemos indicar los metadatos con los que va a trabajar el serializador
@@ -39,7 +39,10 @@ class Detalle_ordenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Detalle_orden
         fields = ['orden', 'subtotal','producto','cantidad']
-
+class MetodoPagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetodoPago
+        fields = ['nombre','descripcion']
 
 
 

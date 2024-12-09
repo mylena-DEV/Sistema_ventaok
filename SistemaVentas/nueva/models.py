@@ -1,5 +1,5 @@
 from django.db import models
-from .choices import CATEGORIAS, ESTADOS, VENDIDA, ANULADA
+from .choices import CATEGORIAS, ESTADOS, VENDIDA, ANULADA, OPCIONES_PAGO
 from decimal import Decimal
 from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
 from .validadores import validacion_numeros, Validacion_letras, validacion_especial, validacion_especial2, validacion_especial3
@@ -102,12 +102,24 @@ class Empleados (models.Model):
         verbose_name = 'Empleado :'
         verbose_name_plural = 'Empleados'
         db_table = 'Empleados'
+        
+class MetodoPago(models.Model):
+    nombre = models.CharField(max_length=100,choices=OPCIONES_PAGO, verbose_name="Método de Pago")
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción")
+    
+    def __str__(self):
+        return dict(self.OPCIONES_METODO).get(self.nombre, 'Desconocido')
+
+    class Meta:
+        verbose_name = "Método de Pago"
+        verbose_name_plural = "Métodos de Pago"
 
 class Orden(models.Model):
     codigo_orden = models.AutoField(primary_key=True,unique=True,blank=False, null=False)
     fecha_orden = models.DateTimeField(auto_now_add=True)
     cliente = models.ForeignKey(Clientes, on_delete=models.CASCADE)
     empleado = models.ForeignKey(Empleados, on_delete=models.CASCADE)
+    metodo_pago = models.ForeignKey(MetodoPago, on_delete=models.SET_NULL, null=True, verbose_name="Método de Pago")
     estados = models.CharField(max_length=50,choices=ESTADOS,default=VENDIDA)
     subtotal_general = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0.00)
     iva = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0.00)
@@ -120,7 +132,7 @@ class Orden(models.Model):
         self.total = self.subtotal_general + self.iva
         self.save()
         
-    def save(self, *args,**kwargs): 
+    '''def save(self, *args,**kwargs): 
         if self.estados == ANULADA:
             #obtenemos los detalles de la orden 
             detalles = Detalle_orden.objects.filter(orden=self)
@@ -131,9 +143,22 @@ class Orden(models.Model):
                 #recalculamos los totales a 0 porque la orden queda anulada
             self.iva = Decimal(0.00)
             self.total = Decimal(0.00) 
-        super().save(*args, **kwargs)
-                
-    
+        super().save(*args, **kwargs)'''
+    def save(self, *args, **kwargs): 
+        if self.estados == ANULADA:
+        # Obtenemos los detalles de la orden 
+            detalles = Detalle_orden.objects.filter(orden=self)
+        # Iteramos cada detalle de orden
+            for detalle in detalles:
+            # Reabastecemos el stock al producto
+                detalle.producto.actualizar_stock2(detalle.cantidad)
+        # Eliminamos la orden actual
+            super().delete(*args, **kwargs)  # Llamamos al método `delete` en lugar de guardar
+        else:
+        # Si no está anulada, seguimos con el guardado normal
+             super().save(*args, **kwargs)
+
+
     def __str__(self):
         return f"{self.codigo_orden} "
     class Meta:
