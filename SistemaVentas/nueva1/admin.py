@@ -47,8 +47,7 @@ class EmpleadosAdmin(admin.ModelAdmin):
     list_filter = ('cedula', 'apellido')
     search_fields = ('cedula', 'nombre', 'apellido')
 
-class ProductosInline(admin.TabularInline):
-    model = Productos
+
     
 
 
@@ -62,14 +61,9 @@ class ProductosAdmin(admin.ModelAdmin):
  
 @admin.register(Proveedores)
 class ProveedoresAdmin(admin.ModelAdmin):
-    inlines = [ProductosInline]
+ 
     list_display = ('cedula', 'nombre', 'apellido', 'telefono', 'email')
     list_filter = ('cedula', 'apellido')
     search_fields = ('cedula', 'nombre', 'apellido')
     
-@admin.register(MetodoPago)
-class MetodoPagoAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
-    search_fields = ('nombre',)
 
-# Register your models here.

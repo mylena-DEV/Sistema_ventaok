@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'nueva',
+    'nueva1',
     'rest_framework' #habilita las vistas del framework
 ]
 
@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'SistemaVentas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lozada1',
+        'NAME': 'lozada10',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'mylena123',
+        'PASSWORD': 'cappa100',
         'PORT': '3306',        
     }
 }

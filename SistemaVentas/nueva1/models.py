@@ -79,7 +79,7 @@ class Productos(models.Model):
         self.cantidad_stock += cantidad
         self.save()
     def __str__(self):
-        return f"{self.nombre}  {self.marca} "
+        return f"{self.nombre}"
     class Meta:
         verbose_name = 'Producto :'
         verbose_name_plural = 'Productos'
@@ -105,27 +105,18 @@ class Empleados (models.Model):
         verbose_name_plural = 'Empleados'
         db_table = 'Empleados'
         
-class MetodoPago(models.Model):
-    nombre = models.CharField(max_length=100,choices=OPCIONES_PAGO, verbose_name="Método de Pago")
-    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción")
-    
-    def __str__(self):
-        return self.nombre
-
-    class Meta:
-        verbose_name = "Método de Pago"
-        verbose_name_plural = "Métodos de Pago"
 
 class Orden(models.Model):
     codigo_orden = models.AutoField(primary_key=True,unique=True,blank=False, null=False)
     fecha_orden = models.DateTimeField(auto_now_add=True)
     cliente = models.ForeignKey(Clientes, on_delete=models.CASCADE)
     empleado = models.ForeignKey(Empleados, on_delete=models.CASCADE)
-    metodo_pago = models.ForeignKey(MetodoPago, on_delete=models.SET_NULL, null=True, verbose_name="Método de Pago")
+    metodo_pago = models.CharField(max_length=100,choices=OPCIONES_PAGO,verbose_name="Método de Pago", default="EFECTIVO")
     estados = models.CharField(max_length=50,choices=ESTADOS,default=VENDIDA)
     subtotal_general = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     iva = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
     
     def actualizar_totales(self):
         detalles = Detalle_orden.objects.filter(orden=self)
