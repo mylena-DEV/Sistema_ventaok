@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'SistemaVentas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lozada10',
+        'NAME': 'lozada2',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'cappa100',
+        'PASSWORD': 'mylena123',
         'PORT': '3306',        
     }
 }

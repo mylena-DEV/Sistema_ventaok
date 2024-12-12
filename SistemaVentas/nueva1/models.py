@@ -59,7 +59,6 @@ class Productos(models.Model):
     codigo = models.PositiveBigIntegerField(primary_key=True, max_length=10, unique=True)
     nombre = models.CharField(max_length=50, blank=False, verbose_name=' Nombre del producto :') 
     proveedor = models.ForeignKey(Proveedores, on_delete=models.CASCADE)
-    
     caracteristicas_categoria = models.CharField(max_length=100, choices= CATEGORIAS)
     precio = models.DecimalField(max_digits=10, decimal_places=2, help_text='ingresa valores con decimales', verbose_name='Precio del producto : ')
     cantidad_stock = models.IntegerField(verbose_name='Cantidad en stock : ')
@@ -85,10 +84,6 @@ class Productos(models.Model):
         verbose_name_plural = 'Productos'
         db_table = 'Productos'
 
-
-
-
-
 class Empleados (models.Model):
     cedula = models.CharField(primary_key=True, max_length=10, unique=True, verbose_name= 'Cedula del Empleado :', validators= [MinLengthValidator(10),validacion_numeros])
     nombre = models.CharField(max_length=50, blank=False, verbose_name='Nombre del Empleado : ',validators= [Validacion_letras])
@@ -105,7 +100,6 @@ class Empleados (models.Model):
         verbose_name_plural = 'Empleados'
         db_table = 'Empleados'
         
-
 class Orden(models.Model):
     codigo_orden = models.AutoField(primary_key=True,unique=True,blank=False, null=False)
     fecha_orden = models.DateTimeField(auto_now_add=True)
@@ -116,7 +110,6 @@ class Orden(models.Model):
     subtotal_general = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     iva = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    
     
     def actualizar_totales(self):
         detalles = Detalle_orden.objects.filter(orden=self)
@@ -137,8 +130,6 @@ class Orden(models.Model):
             self.iva = Decimal(0.00)
             self.total = Decimal(0.00) 
         super().save(*args, **kwargs)
-   
-
 
     def __str__(self):
         return f"{self.codigo_orden} "

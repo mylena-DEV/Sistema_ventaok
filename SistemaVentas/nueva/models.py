@@ -20,10 +20,9 @@ class Clientes(models.Model):
     def __str__(self):
         return f"{self.nombre} - {self.apellido} "
     class Meta:
-        verbose_name = 'ingresa los datos del Cliente :'
+        verbose_name = 'Ingresa los datos del Cliente :'
         verbose_name_plural = 'datos Clientes'
         db_table = 'Clientes'
-
 
     
 class Empresas(models.Model):
@@ -84,10 +83,6 @@ class Productos(models.Model):
         verbose_name = 'Producto :'
         verbose_name_plural = 'Productos'
         db_table = 'Productos'
-
-
-
-
 
 class Empleados (models.Model):
     cedula = models.CharField(primary_key=True, max_length=10, unique=True, verbose_name= 'Cedula del Empleado :', validators= [MinLengthValidator(10),validacion_numeros])

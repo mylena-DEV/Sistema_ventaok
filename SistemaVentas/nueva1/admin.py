@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import *
-
 admin.site.register(Empresas)
 
 # @ vamos a usar un decorador 
+
 class Detalle_ordenInline(admin.TabularInline):
     model = Detalle_orden
     extra = 1  # Añade una fila extra para nuevos detalles
@@ -46,11 +46,6 @@ class EmpleadosAdmin(admin.ModelAdmin):
     list_display = ('cedula', 'nombre', 'apellido', 'direccion', 'telefono', 'email')
     list_filter = ('cedula', 'apellido')
     search_fields = ('cedula', 'nombre', 'apellido')
-
-
-    
-
-
 
 @admin.register(Productos)
 class ProductosAdmin(admin.ModelAdmin):
